@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  engine:
+    build: .
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306"
+    volumes:
+      - "./.docker/db:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: inovattion
+      MYSQL_ROOT_PASSWORD: root
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    depends_on:
+      - mysql
+    restart: always
+    ports:
+      - "81:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+
+  nginx:
+    build: ./.docker/nginx
+    restart: always
+    ports: 
+      - "7777:80"
+    volumes: 
+      - ./:/var/www
+    depends_on:
+      - engine

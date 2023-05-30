@@ -1,0 +1,17 @@
+{
+    "name": "vendor/inovattion",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Inovattion\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leonardo Nhemetz",
+            "email": "leonardo@inovattion.com.br"
+        }
+    ],
+    "require": {
+        
+    }
+}
