@@ -1,8 +1,8 @@
 <?php
 // Conecta ao banco de dados
 $host = 'mysql';
-$user = 'inocode';
-$password = 'inocode';
+$user = 'root';
+$password = '2023Inovatt1on';
 $database = 'inocode';
 $mysqli = new mysqli($host, $user, $password, $database);
 
@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtém os dados do formulário
     $nome = $_POST['nome'];
     $whatsapp = $_POST['whatsapp'];
-	$pessoa = $_POST['pessoa'];
 	$tamanhoesp = $_POST['tamanhoesp'];
 	$tipo_espelho = $_POST['tipo-de-espelho'];
 	$acessorios = '';
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     
     // Prepara a query de inserção
-	$stmt = $mysqli->prepare("INSERT INTO carbone (nome_cliente, whatsapp_cliente, pessoa_cliente, tamanhoesp, tipoesp, acessorios, instalacao) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	$stmt = $mysqli->prepare("INSERT INTO carbone (nome_cliente, whatsapp_cliente, tamanhoesp, tipoesp, acessorios, instalacao) VALUES (?, ?, ?, ?, ?, ?)");
 
     // Verifica se houve algum erro na preparação
     if (!$stmt) {
@@ -43,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Define os parâmetros e executa a query
-    $stmt->bind_param('sssssss', $nome, $whatsapp, $pessoa, $tamanhoesp, $tipo_espelho, $acessorios, $instalacao);
+    $stmt->bind_param('ssssss', $nome, $whatsapp, $tamanhoesp, $tipo_espelho, $acessorios, $instalacao);
     $stmt->execute();
 
     // Verifica se houve algum erro na execução
@@ -57,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	//!enviar alerta pro Telegrão
 	include("bot_telegram.php"); // Inclui o arquivo do bot do Telegram
-	enviarAlertaTelegram($nome, $whatsapp, $pessoa, $tamanhoesp, $tipo_espelho, $acessorios, $instalacao); // Chama a função do bot para enviar a mensagem
+	enviarAlertaTelegram($nome, $whatsapp, $tamanhoesp, $tipo_espelho, $acessorios, $instalacao); // Chama a função do bot para enviar a mensagem
 
 	header("Location: https://www.instagram.com/inovattiontecnologia/");
 	exit();
@@ -69,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <title>Cadastro Inovattion</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -139,17 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<input type="text" class="form-control" id="nome" name="nome" required>
 				</div>
 				<div class="form-group">
-					<h5>Você está comprando como:</h5>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" id="CPF" name="pessoa" value="CPF">
-						<label class="form-check-label" for="CPF">Pessoa Física</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" id="CNPJ" name="pessoa" value="CNPJ">
-						<label class="form-check-label" for="CNPJ">Pessoa Jurídica</label>
-					</div>
-				</div>
-				<div class="form-group">
 					<label for="whatsapp">WhatsApp:</label>
 					<input type="text" class="form-control" placeholder="(xx) yyyyy-yyyy" id="whatsapp" name="whatsapp" required>
 				</div>
@@ -193,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					</div>
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="botao-som" name="acessorios[]" value="botao-som">
-						<label class="form-check-label" for="botao-som">Botão touch para ligar a caixa de som</label>
+						<label class="form-check-label" for="botao-som">Botão touch para ligar a caixa de som (Bluetooth)</label>
 					</div>
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="sensor-temperatura" name="acessorios[]" value="sensor-temperatura">

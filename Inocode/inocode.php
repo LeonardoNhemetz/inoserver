@@ -1,8 +1,8 @@
 <?php
 // Conecta ao banco de dados
 $host = 'mysql';
-$user = 'inocode';
-$password = 'inocode';
+$user = 'root';
+$password = '2023Inovatt1on';
 $database = 'inocode';
 $mysqli = new mysqli($host, $user, $password, $database);
 
@@ -24,15 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtém os dados do formulário
     $nome = $_POST['nome'];
     $whatsapp = $_POST['whatsapp'];
+	$tipo_imovel = $_POST['tipo-de-imovel'];
 	$areas_interesse = '';
 	if (isset($_POST['area-de-interesse']) && count($_POST['area-de-interesse']) > 0) {
 		$areas_interesse = implode(", ", $_POST['area-de-interesse']); // Transforma o array em uma string separada por vírgulas
 	}
-    $vendedor = $_GET['vendedor'];
-    $empresa = $_GET['empresa'];
+    $id = $_GET['id'];
     
     // Prepara a query de inserção
-	$stmt = $mysqli->prepare("INSERT INTO indicacoes (nome_cliente, telefone_cliente, nome_vendedor_inocode, empresa_vendedor_inocode, areas_interesse) VALUES (?, ?, ?, ?, ?)");
+	$stmt = $mysqli->prepare("INSERT INTO generic (nome_cliente, whatsapp_cliente, tipo_imovel, areas_interesse, id_inocode) VALUES (?, ?, ?, ?, ?)");
 
     // Verifica se houve algum erro na preparação
     if (!$stmt) {
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Define os parâmetros e executa a query
-    $stmt->bind_param('sssss', $nome, $whatsapp, $vendedor, $empresa, $areas_interesse);
+    $stmt->bind_param('sssss', $nome, $whatsapp, $tipo_imovel, $areas_interesse, $id);
     $stmt->execute();
 
     // Verifica se houve algum erro na execução
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	//!enviar alerta pro Telegrão
 	include("bot_telegram.php"); // Inclui o arquivo do bot do Telegram
-	enviarAlertaTelegram($nome, $whatsapp, $areas_interesse, $vendedor, $empresa); // Chama a função do bot para enviar a mensagem
+	enviarAlertaTelegram($nome, $whatsapp, $tipo_imovel, $areas_interesse, $id); // Chama a função do bot para enviar a mensagem
 
 	header("Location: https://www.instagram.com/inovattiontecnologia/");
 	exit();
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro</title>
+  <title>Cadastro Inovattion</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -113,10 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-align: center;
 	  margin-top: 1em;
       margin-bottom: 1em;
+	  font-weight: bold;
     }
     .form-group label {
 		align-items: center;
-    	font-weight: bold;
+    	
     }
     .btn-primary {
       margin-top: 2em;
@@ -136,17 +137,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</div>
 				<div class="form-group">
 					<label for="whatsapp">WhatsApp:</label>
-					<input type="text" class="form-control" id="whatsapp" name="whatsapp" required>
+					<input type="text" class="form-control" placeholder="(xx) yyyyy-yyyy" id="whatsapp" name="whatsapp" required>
+				</div>
+				<div class="form-group">
+					<h5>Tipo de Imóvel</h5>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" id="casa" name="tipo-de-imovel" value="casa">
+						<label class="form-check-label" for="casa">Casa</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" id="apartamento" name="tipo-de-imovel" value="apartamento">
+						<label class="form-check-label" for="apartamento">Apartamento</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" id="comercial" name="tipo-de-imovel" value="comercial">
+						<label class="form-check-label" for="comercial">Comercial</label>
+					</div>
 				</div>
 				<div class="form-group">
 					<h5>Área de interesse:</h5>
 					<div class="form-check">
 					<input class="form-check-input" type="checkbox" id="automacao-residencial" name="area-de-interesse[]" value="automacao-residencial">
-					<label class="form-check-label" for="automacao-residencial">Automação Residencial</label>
+					<label class="form-check-label" for="automacao-residencial">Automação Elétrica</label>
 					</div>
 					<div class="form-check">
-					<input class="form-check-input" type="checkbox" id="automacao-industrial" name="area-de-interesse[]" value="automacao-industrial">
-					<label class="form-check-label" for="automacao-industrial">Automação Industrial</label>
+					<input class="form-check-input" type="checkbox" id="automacao-residencial" name="area-de-interesse[]" value="automacao-residencial">
+					<label class="form-check-label" for="automacao-residencial">Automação Hidráulica</label>
+					</div>
+					<div class="form-check">
+					<input class="form-check-input" type="checkbox" id="automacao-residencial" name="area-de-interesse[]" value="automacao-residencial">
+					<label class="form-check-label" for="automacao-residencial">Automação (Cortinas)</label>
 					</div>
 					<div class="form-check">
 					<input class="form-check-input" type="checkbox" id="espelho-inteligente" name="area-de-interesse[]" value="espelho-inteligente">
@@ -155,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</div>
 				<input type="hidden" name="vendedor" value="<?php echo htmlspecialchars($_GET['vendedor']); ?>">
 				<input type="hidden" name="empresa" value="<?php echo htmlspecialchars($_GET['empresa']); ?>">
-				<button type="submit" class="btn btn-primary">Enviar</button>
+				<button type="submit" class="btn btn-primary">Enviar cadastro para receber um desconto</button>
 			</form>
 		</div>
 	</div>

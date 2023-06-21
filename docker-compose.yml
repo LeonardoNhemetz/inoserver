@@ -16,8 +16,9 @@ services:
     volumes:
       - "./.docker/db:/var/lib/mysql"
     environment:
+      MYSQL_USER: inovattion
       MYSQL_DATABASE: inovattion
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: 2023Inovatt1on
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -27,7 +28,7 @@ services:
     ports:
       - "81:80"
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: inovattion
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
 
@@ -35,7 +36,7 @@ services:
     build: ./.docker/nginx
     restart: always
     ports: 
-      - "7777:80"
+      - "80:80"
     volumes: 
       - ./:/var/www
     depends_on:
